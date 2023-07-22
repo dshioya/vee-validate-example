@@ -74,6 +74,7 @@ const itemOptions = [
 .category-item-select-ct {
   display: flex;
   gap: 8px;
+  margin-bottom: 12px;
 
   select {
     padding: 12px;
