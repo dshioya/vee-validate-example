@@ -20,32 +20,33 @@
 </template>
 
 <script lang="ts" setup>
-import {defineProps} from 'vue'
-import {useField} from 'vee-validate'
-import * as yup from 'yup'
+import {defineProps, PropType} from 'vue'
+import {useField, FormContext, useForm} from 'vee-validate'
 
 const props = defineProps({
-  categoryName: {
+  modelName: {
     type: String,
     required: true
   },
-  itemName: {
-    type: String,
+  rules: {
+    type: Object,
+    required: true
+  },
+  form: {
+    type: Object as PropType<FormContext>,
     required: true
   }
 })
 
-const rules = yup.string().required()
-
 const {
   value: categoryValue,
   errorMessage: categoryErrorMessage
-} = useField(props.categoryName, rules)
+} = useField(`${props.modelName}.category`, props.rules.category, {form: props.form})
 
 const {
   value: itemValue,
   errorMessage: itemErrorMessage
-} = useField(props.itemName, rules)
+} = useField(`${props.modelName}.item`, props.rules.item, {form: props.form})
 
 const categoryOptions = [
   {

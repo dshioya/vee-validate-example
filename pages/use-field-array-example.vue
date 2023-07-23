@@ -1,17 +1,20 @@
 <template>
-  <div id="index-page">
+  <div id="use-field-array-example-page">
     <category-item-select v-for="(_, i) in fields"
-                          :category-name="`selectedItems[${i}].category`"
-                          :item-name="`selectedItems[${i}].item`"/>
+                          :model-name="`selectedItems[${i}]`"
+                          :rules="categoryItemRules"
+                          :form="form"/>
     <div class="buttons">
       <button @click="onClickAddButton">追加</button>
       <button @click="onClickSaveButton">保存</button>
+      <button @click="onClickResetButton">リセット</button>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import {useForm, useFieldArray} from 'vee-validate'
+import * as yup from 'yup'
 
 type SelectedItemType = {
   category: string,
@@ -22,7 +25,12 @@ type FormType = {
   selectedItems: SelectedItemType[]
 }
 
-const {values, meta, errors, validate} = useForm<FormType>({
+const categoryItemRules = {
+  category: yup.string().required(),
+  item: yup.string().required(),
+}
+
+const form = useForm<FormType>({
   initialValues: {
     selectedItems: [
       {
@@ -32,6 +40,8 @@ const {values, meta, errors, validate} = useForm<FormType>({
     ]
   }
 })
+
+const {validate, resetForm} = form
 
 const {fields, push} = useFieldArray<SelectedItemType>('selectedItems')
 
@@ -45,10 +55,23 @@ function onClickAddButton() {
 function onClickSaveButton() {
   validate()
 }
+
+function onClickResetButton() {
+  resetForm({
+    values: {
+      selectedItems: [
+        {
+          category: '',
+          item: ''
+        }
+      ]
+    }
+  })
+}
 </script>
 
 <style lang="scss">
-#index-page {
+#use-field-array-example-page {
   .buttons {
     display: flex;
     gap: 8px;
